@@ -1,8 +1,7 @@
 ﻿@page "/payment"
 @rendermode InteractiveServer
-<h3>
-    ملخص الفاتورة
-</h3>
+
+<h3>ملخص الفاتورة</h3>
 <hr class="hrGoldColor" />
 <div class="row">
     <div class="col-lg-5 col-md-3 col-sm-12 col-xs-12" id="summarydiv">
@@ -15,14 +14,14 @@
                 <span>150 ريال</span>
             </div>
             <div class="col-8">
-                <h5>الوحده الثانيه</h5>
+                <h5>الوحده الثانية</h5>
                 <p>هي المشاريع التي يتم خلالها تصنيع مركبات أعلاف الدواجن.</p>
             </div>
             <div class="col-4">
                 <span>150 ريال</span>
             </div>
             <div class="col-8">
-                <h5>الوحده الثالثه</h5>
+                <h5>الوحده الثالثة</h5>
                 <p>هي المشاريع التي يتم خلالها تصنيع مركبات أعلاف الدواجن.</p>
             </div>
             <div class="col-4">
@@ -42,7 +41,9 @@
             <div class="col-4">
                 <span>150 ريال</span>
             </div>
-            <hr />
+            <div class="col-10">
+                <hr />
+            </div>
             <div class="col-8">
                 <h5>مجموع الفاتورة</h5>
             </div>
@@ -55,7 +56,7 @@
     <div class="col-lg-7 col-md-3 col-sm-12 col-xs-12" id="paymentMethods">
         <div class="row panel">
             <label class="radio-option">
-                <input type="radio" name="paymentMethod" value="cards" />
+                <input type="radio" name="paymentMethod" value="cards" @onclick="() => ShowTextBox(true)" />
                 <span>البطاقات</span>
             </label>
             <div class="paymentCards">
@@ -64,17 +65,29 @@
             </div>
 
             <label class="radio-option">
-                <input type="radio" name="paymentMethod" value="sadad" />
+                <input type="radio" name="paymentMethod" value="sadad" @onclick="() => ShowTextBox(false)" />
                 <span>سداد</span>
             </label>
             <div class="paymentCards">
                 <img src="/images/icons/Sadad.png" />
             </div>
+
+            @if (IsCardSelected)
+            {
+                <div class="mt-3">
+                    <label for="cardDetails">أدخل تفاصيل البطاقة:</label>
+                    <input type="text" id="cardDetails" class="form-control" placeholder="أدخل رقم البطاقة" />
+                </div>
+            }
         </div>
     </div>
-
-
 </div>
-@code {
 
+@code {
+    private bool IsCardSelected = false;
+
+    private void ShowTextBox(bool isSelected)
+    {
+        IsCardSelected = isSelected;
+    }
 }

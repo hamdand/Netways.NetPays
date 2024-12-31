@@ -187,3 +187,10 @@ h1:focus {
         background-image: url('images/Banner-Background-02.jpg');
         background-position-x: center;
     }
+
+.row .panel {
+    padding: 10px 20px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    background-color: white;
+}
