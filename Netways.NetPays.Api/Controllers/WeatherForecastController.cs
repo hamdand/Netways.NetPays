@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace Netways.NetPays.Api.Controllers
 {
@@ -21,6 +22,9 @@ namespace Netways.NetPays.Api.Controllers
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
+            Guid guid = Guid.NewGuid();
+            Log.Information("test {Guid}.", guid);
+
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -28,6 +32,7 @@ namespace Netways.NetPays.Api.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+
         }
     }
 }
