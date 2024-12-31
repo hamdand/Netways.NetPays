@@ -5,6 +5,8 @@ VisualStudioVersion = 17.12.35527.113 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netways.NetPays.Api", "Netways.NetPays.Api\Netways.NetPays.Api.csproj", "{B31FE2B7-3C54-48B7-9253-C4A7DCB27084}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netways.NetPays.UI", "Netways.NetPays.UI\Netways.NetPays.UI.csproj", "{DEFCAE57-078B-4801-A785-6DA902E4C80F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B31FE2B7-3C54-48B7-9253-C4A7DCB27084}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B31FE2B7-3C54-48B7-9253-C4A7DCB27084}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B31FE2B7-3C54-48B7-9253-C4A7DCB27084}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEFCAE57-078B-4801-A785-6DA902E4C80F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEFCAE57-078B-4801-A785-6DA902E4C80F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEFCAE57-078B-4801-A785-6DA902E4C80F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEFCAE57-078B-4801-A785-6DA902E4C80F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
