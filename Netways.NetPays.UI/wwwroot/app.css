@@ -1,5 +1,7 @@
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /* font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+    font-family: "MyCustomFont", sans-serif;
+    direction: rtl;
 }
 
 a, .btn-link {
@@ -54,6 +56,11 @@ h1:focus {
     max-width: 90px;
 }
 
+@font-face {
+    font-family: 'MyCustomFont';
+    src: url('/fonts/Droid.Arabic.Kufi_DownloadSoftware.iR_.ttf') format('truetype');
+}
+
 .checkouttable .item {
     width: 50%;
     border: solid 1px red;
@@ -61,10 +68,45 @@ h1:focus {
 }
 
     .checkouttable .item img {
-        max-width: 125px;
+        max-width: 85px;
     }
 
 .checkouttable button {
     background-color: #2a902d;
     border-color: #247c27;
 }
+
+.headermenu {
+    display: flex; /* Enable flexbox */
+    justify-content: center; /* Center items horizontally */
+    align-items: center; /* Center items vertically */
+    text-align: center;
+    background-image: url('images/Banner-Background-02.jpg');
+    background-position-x: center;
+    height: 150px;
+    direction: rtl;
+    font-family: "MyCustomFont", sans-serif;
+}
+
+    .headermenu ul {
+        list-style-type: none; /* Removes the dots (bullets) */
+        padding: 0; /* Removes default padding */
+        margin: 0; /* Removes default margin */
+        display: flex; /* Makes the list horizontal */
+    }
+
+        .headermenu ul li {
+            margin-right: 15px; /* Adds spacing between items */
+        }
+
+            .headermenu ul li a {
+                text-decoration: none; /* Removes underline from links */
+                color: white; /* Sets link text color */
+                font-family: "MyCustomFont", sans-serif;
+            }
+
+    .headermenu a {
+        color: cornflowerblue;
+        padding: 10px;
+        text-decoration: none;
+    }
