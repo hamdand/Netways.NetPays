@@ -1,13 +1,33 @@
 ﻿@page "/counter"
 @rendermode InteractiveServer
 
-<PageTitle>Counter</PageTitle>
+<PageTitle>Check out</PageTitle>
 
-<h1>Counter</h1>
+<h1>Check out</h1>
+<div class="checkouttable">
+    <div class="item">
+        <img src="/images/icons/item.png" />
+    </div>
+    <div class="item">
+        <img src="/images/icons/item.png" />
+    </div>
+    <div class="item">
+        <img src="/images/icons/item.png" />
+    </div>
+    <div class="paymentmethods">
+        <img src="/images/icons/Mastercard.png" />
+        <img src="/images/icons/Sadad.png" />
+        <img src="/images/icons/Visa.png" />
+    </div>
+    <button class="btn btn-primary" @onclick="IncrementCount">Pay direct</button>
 
+    <button class="btn btn-primary" @onclick="IncrementCount">Create bill on SADAD</button>
+</div>
 <p role="status">Current count: @currentCount</p>
+<p>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+</p>
+
 
 @code {
     private int currentCount = 0;
