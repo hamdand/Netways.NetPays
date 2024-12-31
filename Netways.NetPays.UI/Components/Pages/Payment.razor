@@ -1,0 +1,80 @@
+﻿@page "/payment"
+@rendermode InteractiveServer
+<h3>
+    ملخص الفاتورة
+</h3>
+<hr class="hrGoldColor" />
+<div class="row">
+    <div class="col-lg-5 col-md-3 col-sm-12 col-xs-12" id="summarydiv">
+        <div class="row">
+            <div class="col-8">
+                <h5>الوحده الأولى</h5>
+                <p>هي المشاريع التي يتم خلالها تصنيع مركبات أعلاف الدواجن.</p>
+            </div>
+            <div class="col-4">
+                <span>150 ريال</span>
+            </div>
+            <div class="col-8">
+                <h5>الوحده الثانيه</h5>
+                <p>هي المشاريع التي يتم خلالها تصنيع مركبات أعلاف الدواجن.</p>
+            </div>
+            <div class="col-4">
+                <span>150 ريال</span>
+            </div>
+            <div class="col-8">
+                <h5>الوحده الثالثه</h5>
+                <p>هي المشاريع التي يتم خلالها تصنيع مركبات أعلاف الدواجن.</p>
+            </div>
+            <div class="col-4">
+                <span>150 ريال</span>
+            </div>
+            <div class="col-8">
+                <h5>الوحده الرابعة</h5>
+                <p>هي المشاريع التي يتم خلالها تصنيع مركبات أعلاف الدواجن.</p>
+            </div>
+            <div class="col-4">
+                <span>150 ريال</span>
+            </div>
+            <div class="col-8">
+                <h5>الوحده الخامسة</h5>
+                <p>هي المشاريع التي يتم خلالها تصنيع مركبات أعلاف الدواجن.</p>
+            </div>
+            <div class="col-4">
+                <span>150 ريال</span>
+            </div>
+            <hr />
+            <div class="col-8">
+                <h5>مجموع الفاتورة</h5>
+            </div>
+            <div class="col-4">
+                <h5>750 ريال</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7 col-md-3 col-sm-12 col-xs-12" id="paymentMethods">
+        <div class="row panel">
+            <label class="radio-option">
+                <input type="radio" name="paymentMethod" value="cards" />
+                <span>البطاقات</span>
+            </label>
+            <div class="paymentCards">
+                <img src="/images/icons/Mastercard.png" />
+                <img src="/images/icons/Visa.png" />
+            </div>
+
+            <label class="radio-option">
+                <input type="radio" name="paymentMethod" value="sadad" />
+                <span>سداد</span>
+            </label>
+            <div class="paymentCards">
+                <img src="/images/icons/Sadad.png" />
+            </div>
+        </div>
+    </div>
+
+
+</div>
+@code {
+
+}

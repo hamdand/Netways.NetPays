@@ -74,6 +74,8 @@ h1:focus {
 .checkouttable button {
     background-color: #2a902d;
     border-color: #247c27;
+    background-image: url('images/Banner-Background-02.jpg');
+    background-position-x: center;
 }
 
 .headermenu {
@@ -97,16 +99,91 @@ h1:focus {
 
         .headermenu ul li {
             margin-right: 15px; /* Adds spacing between items */
+            padding: 0 15px;
         }
 
             .headermenu ul li a {
                 text-decoration: none; /* Removes underline from links */
                 color: white; /* Sets link text color */
                 font-family: "MyCustomFont", sans-serif;
+                position: relative; /* Required for the underline animation */
+                display: inline-block; /* Ensures proper positioning for the pseudo-element */
             }
 
-    .headermenu a {
-        color: cornflowerblue;
-        padding: 10px;
-        text-decoration: none;
+                .headermenu ul li a::after {
+                    content: ''; /* Adds an empty content for the underline */
+                    position: absolute; /* Position it relative to the link */
+                    left: 0;
+                    bottom: -3px; /* Position it slightly below the link text */
+                    width: 0; /* Initially, the underline has no width */
+                    height: 2px; /* Thickness of the underline */
+                    background-color: #997a2c; /* Color of the underline */
+                    transition: width 0.3s ease; /* Adds a smooth animation */
+                }
+
+                .headermenu ul li a:hover::after {
+                    width: 100%; /* On hover, the underline expands to full width */
+                }
+
+
+
+#summarydiv {
+    /*border-left: 1px solid grey;*/
+}
+
+    #summarydiv p {
+        color: dimgray;
+        font-size: 0.9rem;
+    }
+
+        #summarydiv span {
+            color: black;
+        }
+    #summarydiv h5 {
+        font-size: 1.3rem;
+    }
+    h3{
+        text-align:center;
+    }
+.hrGoldColor {
+    background-color: #997a2c
+}
+
+
+    #paymentMethods .panel .paymentCards img {
+      max-width: 80px;
+    }
+
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+    .radio-option input[type="radio"] {
+        display: none; /* Hide the actual radio button */
+    }
+
+    .radio-option span {
+        display: inline-block;
+        padding: 10px 20px;
+        border: 1px solid lightgray;
+        border-radius: 5px;
+        background-color: white;
+        margin-right: 10px;
+        font-family: "MyCustomFont", sans-serif; /* Optional: Apply your custom font */
+        transition: all 0.3s ease;
+        text-align: center;
+        width: 120px;
+        font-weight: 600;
+    }
+
+    .radio-option input[type="radio"]:checked + span {
+        /*background-color: lightgreen;*/ /* Change background for selected option */
+        /*border-color: green;*/
+        color: white;
+        background-image: url('images/Banner-Background-02.jpg');
+        background-position-x: center;
     }
