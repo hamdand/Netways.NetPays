@@ -1,0 +1,119 @@
+﻿@page "/viewproducts"
+@attribute [StreamRendering]
+@inject NavigationManager NavigationManager
+
+<PageTitle>منتجات صندوق التنمية الزراعية</PageTitle>
+
+<h1>منتجات صندوق التنمية الزراعية</h1>
+
+<p>هذا المكون يعرض قائمة بالمنتجات التي يقدمها صندوق التنمية الزراعية.</p>
+
+@if (products == null || !products.Any())
+{
+    <p><em>جاري التحميل...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>اختيار</th>
+                <th>الصورة</th>
+                <th>اسم المنتج</th>
+                <th>الوصف</th>
+                <th>السعر (ريال سعودي)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>
+                       @*  <input type="checkbox" @onchange="(e) => SelectProduct(product, ((ChangeEventArgs)e).Value)" /> *@
+                    </td>
+                    <td>
+                        <img src="@product.ImageUrl" alt="@product.Title" class="product-image" />
+                    </td>
+                    <td>@product.Title</td>
+                    <td>@product.Description</td>
+                    <td>@product.Price.ToString("N2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+   
+}
+<button class="btn btn-primary mt-3" @onclick="GoToPayment">اذهب لصفحة الدفع</button>
+@code {
+    private List<Product> products = new List<Product>();
+    private List<Product> selectedProducts = new List<Product>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate asynchronous loading
+        await Task.Delay(500);
+
+        // Sample data with external image URLs
+        products = new List<Product>
+        {
+            new Product
+            {
+                Title = "مشاريع الدواجن",
+                Description = "المشاريع التي يتم فيها تسمين الدجاج اللاحم.",
+                Price = 500000, // Example price in SAR
+                ImageUrl = "/images/poultry_project.jpg" // Replace with actual image URL
+            },
+            new Product
+            {
+                Title = "مشاريع البيوت المحمية",
+                Description = "مشاريع زراعية في البيوت المحمية المكيفة لزراعة المحاصيل المختلفة.",
+                Price = 750000, // Example price in SAR
+                ImageUrl = "/images/greenhouse_project.jpg" // Replace with actual image URL
+            },
+            new Product
+            {
+                Title = "مشاريع تربية النحل",
+                Description = "مشاريع تربية النحل المتنقلة لإنتاج العسل.",
+                Price = 200000, // Example price in SAR
+                ImageUrl = "/images/beekeeping_project.jpg" // Replace with actual image URL
+            }
+        };
+    }
+
+    private void SelectProduct(Product product, object isChecked)
+    {
+        if (isChecked is bool value) // Safely cast and check for null
+        {
+            if (value)
+            {
+                if (!selectedProducts.Contains(product))
+                {
+                    selectedProducts.Add(product);
+                }
+            }
+            else
+            {
+                selectedProducts.Remove(product);
+            }
+        }
+    }
+
+
+    private void GoToPayment(MouseEventArgs e)
+    {
+        // Serialize the selected products into a query string
+        var query = string.Join("&", selectedProducts.Select((p, i) =>
+            $"Title{i}={Uri.EscapeDataString(p.Title)}&Price{i}={p.Price}"));
+
+        // Navigate to the payment page with selected products
+        NavigationManager.NavigateTo($"/payment?{query}");
+    }
+
+    private class Product
+    {
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public double Price { get; set; }
+        public string ImageUrl { get; set; } = "";// Image URL property
+    }
+}

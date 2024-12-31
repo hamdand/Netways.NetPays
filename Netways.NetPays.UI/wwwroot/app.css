@@ -233,3 +233,10 @@ h1:focus {
         font-weight: bold; /* Highlight the invoice number */
         color: #007bff; /* Optional: Make the number more prominent */
     }
+
+.product-image {
+    width: 100px; /* Adjust as needed */
+    height: auto;
+    border-radius: 5px; /* Optional: Rounded corners */
+    object-fit: cover; /* Ensures proper aspect ratio */
+}
