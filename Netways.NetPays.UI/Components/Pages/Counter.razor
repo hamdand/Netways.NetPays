@@ -1,40 +1,77 @@
-﻿@page "/counter"
-@rendermode InteractiveServer
+﻿@page "/weather"
 
-<PageTitle>Check out</PageTitle>
+@page "/products"
+@attribute [StreamRendering]
 
-<h3>شاشة الدفع</h3>
-<hr />
-<div class="checkouttable">
-    <div class="item">
-        <img src="/images/icons/item.png" />
-    </div>
-    <div class="item">
-        <img src="/images/icons/item.png" />
-    </div>
-    <div class="item">
-        <img src="/images/icons/item.png" />
-    </div>
-    <div class="paymentmethods">
-        <img src="/images/icons/Mastercard.png" />
-        <img src="/images/icons/Sadad.png" />
-        <img src="/images/icons/Visa.png" />
-    </div>
-    <button class="btn btn-primary" @onclick="IncrementCount">دفع</button>
+<PageTitle>منتجات صندوق التنمية الزراعية</PageTitle>
 
-    <button class="btn btn-primary" @onclick="IncrementCount">إنشاء فاتورة سداد</button>
-</div>
-<p role="status">Current count: @currentCount</p>
-<p>
+<h1>منتجات صندوق التنمية الزراعية</h1>
 
-</p>
+<p>هذا المكون يعرض قائمة بالمنتجات التي يقدمها صندوق التنمية الزراعية.</p>
 
+@if (products == null || !products.Any())
+{
+    <p><em>جاري التحميل...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>اسم المنتج</th>
+                <th>الوصف</th>
+                <th>السعر (ريال سعودي)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>@product.Title</td>
+                    <td>@product.Description</td>
+                    <td>@product.Price.ToString("N2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
-    private int currentCount = 0;
+    private List<Product> products = new List<Product>();
 
-    private void IncrementCount()
+    protected override async Task OnInitializedAsync()
     {
-        currentCount++;
+        // Simulate asynchronous loading
+        await Task.Delay(500);
+
+        // Sample data in Arabic
+        products = new List<Product>
+        {
+            new Product
+            {
+                Title = "مشاريع الدواجن",
+                Description = "المشاريع التي يتم فيها تسمين الدجاج اللاحم.",
+                Price = 500000 // Example price in SAR
+            },
+            new Product
+            {
+                Title = "مشاريع البيوت المحمية",
+                Description = "مشاريع زراعية في البيوت المحمية المكيفة لزراعة المحاصيل المختلفة.",
+                Price = 750000 // Example price in SAR
+            },
+            new Product
+            {
+                Title = "مشاريع تربية النحل",
+                Description = "مشاريع تربية النحل المتنقلة لإنتاج العسل.",
+                Price = 200000 // Example price in SAR
+            }
+        };
+    }
+
+    private class Product
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public double Price { get; set; }
     }
 }

@@ -52,31 +52,76 @@
             </div>
         </div>
     </div>
-
-    <div class="col-lg-7 col-md-3 col-sm-12 col-xs-12" id="paymentMethods">
-        <div class="row panel">
-            <label class="radio-option">
-                <input type="radio" name="paymentMethod" value="cards" @onclick="() => ShowTextBox(true)" />
-                <span>البطاقات</span>
-            </label>
-            <div class="paymentCards">
-                <img src="/images/icons/Mastercard.png" />
-                <img src="/images/icons/Visa.png" />
+    <div class="col-lg-7 col-md-3 col-sm-12 col-xs-12" id="paymentMethods" style="position: relative;">
+        @if (ShowSadadLoader)
+        {
+            <div class="loader-overlay">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </div>
+        }
 
-            <label class="radio-option">
-                <input type="radio" name="paymentMethod" value="sadad" @onclick="() => ShowTextBox(false)" />
-                <span>سداد</span>
-            </label>
-            <div class="paymentCards">
-                <img src="/images/icons/Sadad.png" />
+        <div class="row panel">
+            <div class="col-3">
+                <label class="radio-option">
+                    <input type="radio" name="paymentMethod" value="cards" @onclick="() => ShowCardsOptions()" />
+                    <span>البطاقات</span>
+                </label>
+                <div class="paymentCards">
+                    <img src="/images/icons/Mastercard.png" />
+                    <img src="/images/icons/Visa.png" />
+                </div>
+
+                <label class="radio-option">
+                    <input type="radio" name="paymentMethod" value="sadad" @onclick="() => ShowSadaOptions()" />
+                    <span>سداد</span>
+                </label>
+                <div class="paymentCards">
+                    <img src="/images/icons/Sadad.png" />
+                </div>
             </div>
 
             @if (IsCardSelected)
             {
-                <div class="mt-3">
-                    <label for="cardDetails">أدخل تفاصيل البطاقة:</label>
-                    <input type="text" id="cardDetails" class="form-control" placeholder="أدخل رقم البطاقة" />
+                <div class="col-9">
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="cardDetails">رقم البطاقة:</label>
+                            <input type="text" id="cardDetails" class="form-control" placeholder="أدخل رقم البطاقة" />
+                        </div>
+                        <div class="col-6 mt-2">
+                            <label for="firstName">الاسم الأول:</label>
+                            <input type="text" id="firstName" class="form-control" placeholder="أدخل الاسم الأول" />
+                        </div>
+                        <div class="col-6 mt-2">
+                            <label for="lastName">الاسم الأخير:</label>
+                            <input type="text" id="lastName" class="form-control" placeholder="أدخل الاسم الأخير" />
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (IsSadadSelected)
+            {
+                <div class="col-9">
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="firstName">هل أنت متأكد:</label>
+                            <button class="btn btn-primary" @onclick="IncrementCount">أنشأ فاتورة سداد</button>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (ShowSadadResult)
+            {
+                <div class="col-9">
+                    <div class="row">
+                        <div class="col-12 text-end">
+                            <h5 class="success-message">تم إنشاء الفاتورة بنجاح</h5>
+                            <h5 class="mt-3 invoice-number">رقم فاتورة سداد: <span>202416116</span></h5>
+                            <h6 class="mt-3 waiting-text">@Dots<span></span></h6>
+                        </div>
+                    </div>
                 </div>
             }
         </div>
@@ -85,9 +130,55 @@
 
 @code {
     private bool IsCardSelected = false;
+    private bool IsSadadSelected = false;
+    private bool ShowSadadLoader = false;
+    private bool ShowSadadResult = false;
+    private string Dots = ""; // Holds the current dots
+    private string waitingMsg = "سيتم التحديث تلقائيا بعد الدفع"; // Holds the current dots
 
-    private void ShowTextBox(bool isSelected)
+
+    private async Task AnimateDots()
     {
-        IsCardSelected = isSelected;
+        while (true) // Infinite loop for continuous animation
+        {
+            Dots = "";
+            for (int i = 0; i <= waitingMsg.Length - 1; i++)
+            {
+                Dots += waitingMsg[i]; // Update the dots (0 to 3 dots)
+                StateHasChanged(); // Trigger UI update
+                await Task.Delay(250); // Delay for smooth animation
+            }
+
+            await Task.Delay(2250);
+        }
     }
+    private void ShowCardsOptions()
+    {
+        IsSadadSelected = ShowSadadResult = false;
+        IsCardSelected = true;
+        ShowSadadLoader = false; // Hide loader when switching
+    }
+
+    private void ShowSadaOptions()
+    {
+        IsSadadSelected = true;
+        IsCardSelected = ShowSadadResult = false;
+        ShowSadadLoader = false; // Hide loader when switching
+    }
+
+    private async Task IncrementCount(MouseEventArgs e)
+    {
+        ShowSadadLoader = true; // Show loader
+        StateHasChanged(); // Trigger UI update to show the loader
+
+        await Task.Delay(3000); // Simulate delay or background operation
+
+        ShowSadadLoader = false; // Hide loader
+        IsSadadSelected = false;
+        ShowSadadResult = true;
+        await AnimateDots();
+        StateHasChanged(); // Trigger UI update to hide the loader
+
+    }
+
 }
