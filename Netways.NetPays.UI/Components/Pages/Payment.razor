@@ -5,10 +5,10 @@
 
 <h3>ملخص الفاتورة</h3>
 <hr class="hrGoldColor" />
-<div class="row">
+<div class="row mb-3">
     <div class="col-lg-5 col-md-3 col-sm-12 col-xs-12" id="summarydiv">
-        <div class="row">
-            @if(selectedProducts != null){
+        @if(selectedProducts != null){
+            <div class="row">
                 @foreach (var product in selectedProducts)
                 {
                     <div class="col-8">
@@ -19,13 +19,30 @@
                         <span>@product.Price ريال</span>
                     </div>
                 }
-            }
-            else{
+            </div>
+            <div class="row mt-lg-5">
+                <div class="col-8">
+                    <span>الإجمالي: </span>
+                </div>                
+                <div class="col-4">
+                    <span>@selectedProducts.Sum(x => x.Price) ريال</span>
+                </div>
+            </div>            
+            <div class="row mt-lg-5">
+                <div class="col-4"></div>
+                <div class="col-4 d-grid gap-2">
+                    <button class="btn btn-warning">دفع</button>
+                </div>
+                <div class="col-4"></div>
+            </div>
+        }
+        else{
+            <div class="row">
                 <div class="col-8">
                     <h5>No Selected Products Found!</h5>
                 </div>
-            }
-        </div>
+            </div>
+        }
     </div>
     <div class="col-lg-7 col-md-3 col-sm-12 col-xs-12" id="paymentMethods" style="position: relative;">
         @if (ShowSadadLoader)
@@ -93,8 +110,8 @@
                     <div class="row">
                         <div class="col-12 text-end">
                             <h5 class="success-message">تم إنشاء الفاتورة بنجاح</h5>
-                            <h5 class="mt-3 invoice-number">رقم فاتورة سداد: <span>202416116</span></h5>
-                            <h6 class="mt-3 waiting-text">@Dots<span></span></h6>
+                            <h5 class="mt-3 invoice-number">رقم فاتورة سداد: <span></span></h5>
+                            <h6 class="mt-3 waiting-text">@Dots<span>@sadadRecipt</span></h6>
                         </div>
                     </div>
                 </div>
@@ -111,6 +128,7 @@
     private string Dots = ""; // Holds the current dots
     private string waitingMsg = "سيتم التحديث تلقائيا بعد الدفع"; // Holds the current dots
     private List<Product>? selectedProducts;
+    int sadadRecipt = new Random().Next(100000, int.MaxValue);
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
