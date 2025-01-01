@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Serilog;
+using System.Text.Json.Serialization;
 
 namespace Netways.NetPays.Api.Controllers
 {
@@ -23,7 +25,7 @@ namespace Netways.NetPays.Api.Controllers
         public IEnumerable<WeatherForecast> Get()
         {
             Guid guid = Guid.NewGuid();
-            Log.Information("test {Guid}.", guid);
+            Log.Information("API Log {Guid}.", guid);
 
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
@@ -33,6 +35,13 @@ namespace Netways.NetPays.Api.Controllers
             })
             .ToArray();
 
+        }
+
+        [HttpPost(Name = "CreateWeatherForecast")]
+        public void CreateWeatherItems([FromBody] WeatherForecast weatherForecast)
+        {
+            Guid guid = Guid.NewGuid();
+            Log.Information("API Log {Guid}.,{payload}", guid, JsonConvert.SerializeObject(weatherForecast));
         }
     }
 }
