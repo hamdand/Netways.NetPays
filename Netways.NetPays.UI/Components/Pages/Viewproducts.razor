@@ -2,6 +2,8 @@
 @rendermode InteractiveServer
 @attribute [StreamRendering]
 @inject NavigationManager NavigationManager
+@inject IJSRuntime jSRuntime
+
 
 <PageTitle>منتجات صندوق التنمية الزراعية</PageTitle>
 
@@ -44,7 +46,7 @@ else
     </table>
 
 }
-<button class="btn btn-primary mt-3" @onclick="GoToPayment">اذهب لصفحة الدفع</button>
+<button class="btn btn-primary m-3" @onclick="GoToPayment">اذهب لصفحة الدفع</button>
 @code {
     private List<Product> products = new List<Product>();
     private List<Product> selectedProducts = new List<Product>();
@@ -59,6 +61,7 @@ else
         {
             new Product
             {
+                Id = 1,
                 Title = "مشاريع الدواجن",
                 Description = "المشاريع التي يتم فيها تسمين الدجاج اللاحم.",
                 Price = 500000, // Example price in SAR
@@ -66,6 +69,7 @@ else
             },
             new Product
             {
+                Id = 2,
                 Title = "مشاريع البيوت المحمية",
                 Description = "مشاريع زراعية في البيوت المحمية المكيفة لزراعة المحاصيل المختلفة.",
                 Price = 750000, // Example price in SAR
@@ -73,6 +77,7 @@ else
             },
             new Product
             {
+                Id = 3,
                 Title = "مشاريع تربية النحل",
                 Description = "مشاريع تربية النحل المتنقلة لإنتاج العسل.",
                 Price = 200000, // Example price in SAR
@@ -100,26 +105,25 @@ else
     }
 
 
-    private void GoToPayment(MouseEventArgs e)
+    private async Task GoToPayment(MouseEventArgs e)
     {
         if (selectedProducts == null || !selectedProducts.Any())
         {
             return;
         }
-        
+        var jsonSelectedProducts = await jSRuntime.InvokeAsync<string>("localStorageHelper.load", "selectedProducts");
+
+        if (!string.IsNullOrEmpty(jsonSelectedProducts)){
+            await jSRuntime.InvokeAsync<string>("localStorageHelper.remove", "selectedProducts");
+        }
+        // Save to local storage
+        await jSRuntime.InvokeVoidAsync("localStorageHelper.save", "selectedProducts", JsonSerializer.Serialize(selectedProducts));
+
         // Serialize the selected products into a query string
         var query = string.Join("&", selectedProducts.Select((p, i) =>
             $"Title{i}={Uri.EscapeDataString(p.Title)}&Price{i}={p.Price}"));
 
         // Navigate to the payment page with selected products
         NavigationManager.NavigateTo($"/payment?{query}");
-    }
-
-    private class Product
-    {
-        public string Title { get; set; } = "";
-        public string Description { get; set; } = "";
-        public double Price { get; set; }
-        public string ImageUrl { get; set; } = "";// Image URL property
     }
 }

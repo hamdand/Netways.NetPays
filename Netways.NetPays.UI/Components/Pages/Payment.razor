@@ -1,55 +1,30 @@
 ﻿@page "/payment"
 @rendermode InteractiveServer
+@inject IJSRuntime jSRuntime
+
 
 <h3>ملخص الفاتورة</h3>
 <hr class="hrGoldColor" />
 <div class="row">
     <div class="col-lg-5 col-md-3 col-sm-12 col-xs-12" id="summarydiv">
         <div class="row">
-            <div class="col-8">
-                <h5>الوحده الأولى</h5>
-                <p>هي المشاريع التي يتم خلالها تصنيع مركبات أعلاف الدواجن.</p>
-            </div>
-            <div class="col-4">
-                <span>150 ريال</span>
-            </div>
-            <div class="col-8">
-                <h5>الوحده الثانية</h5>
-                <p>هي المشاريع التي يتم خلالها تصنيع مركبات أعلاف الدواجن.</p>
-            </div>
-            <div class="col-4">
-                <span>150 ريال</span>
-            </div>
-            <div class="col-8">
-                <h5>الوحده الثالثة</h5>
-                <p>هي المشاريع التي يتم خلالها تصنيع مركبات أعلاف الدواجن.</p>
-            </div>
-            <div class="col-4">
-                <span>150 ريال</span>
-            </div>
-            <div class="col-8">
-                <h5>الوحده الرابعة</h5>
-                <p>هي المشاريع التي يتم خلالها تصنيع مركبات أعلاف الدواجن.</p>
-            </div>
-            <div class="col-4">
-                <span>150 ريال</span>
-            </div>
-            <div class="col-8">
-                <h5>الوحده الخامسة</h5>
-                <p>هي المشاريع التي يتم خلالها تصنيع مركبات أعلاف الدواجن.</p>
-            </div>
-            <div class="col-4">
-                <span>150 ريال</span>
-            </div>
-            <div class="col-10">
-                <hr />
-            </div>
-            <div class="col-8">
-                <h5>مجموع الفاتورة</h5>
-            </div>
-            <div class="col-4">
-                <h5>750 ريال</h5>
-            </div>
+            @if(selectedProducts != null){
+                @foreach (var product in selectedProducts)
+                {
+                    <div class="col-8">
+                        <h5>@product.Title</h5>
+                        <p>@product.Description</p>
+                    </div>
+                    <div class="col-4">
+                        <span>@product.Price ريال</span>
+                    </div>
+                }
+            }
+            else{
+                <div class="col-8">
+                    <h5>No Selected Products Found!</h5>
+                </div>
+            }
         </div>
     </div>
     <div class="col-lg-7 col-md-3 col-sm-12 col-xs-12" id="paymentMethods" style="position: relative;">
@@ -135,7 +110,15 @@
     private bool ShowSadadResult = false;
     private string Dots = ""; // Holds the current dots
     private string waitingMsg = "سيتم التحديث تلقائيا بعد الدفع"; // Holds the current dots
+    private List<Product>? selectedProducts;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadSelectedProducts();
+        }
+    }
 
     private async Task AnimateDots()
     {
@@ -180,5 +163,16 @@
         StateHasChanged(); // Trigger UI update to hide the loader
 
     }
+    private async Task LoadSelectedProducts()
+    {
+        // Retrieve the JSON string from local storage
+        var jsonSelectedProducts = await jSRuntime.InvokeAsync<string>("localStorageHelper.load", "selectedProducts");
 
+        if (!string.IsNullOrEmpty(jsonSelectedProducts))
+        {
+            // Deserialize the JSON string back to the original type
+            selectedProducts = JsonSerializer.Deserialize<List<Product>>(jsonSelectedProducts);
+        }
+        StateHasChanged();
+    }
 }
