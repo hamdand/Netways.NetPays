@@ -1,4 +1,5 @@
 ﻿@page "/viewproducts"
+@rendermode InteractiveServer
 @attribute [StreamRendering]
 @inject NavigationManager NavigationManager
 
@@ -41,7 +42,7 @@ else
             }
         </tbody>
     </table>
-   
+
 }
 <button class="btn btn-primary mt-3" @onclick="GoToPayment">اذهب لصفحة الدفع</button>
 @code {
@@ -101,6 +102,11 @@ else
 
     private void GoToPayment(MouseEventArgs e)
     {
+        if (selectedProducts == null || !selectedProducts.Any())
+        {
+            return;
+        }
+        
         // Serialize the selected products into a query string
         var query = string.Join("&", selectedProducts.Select((p, i) =>
             $"Title{i}={Uri.EscapeDataString(p.Title)}&Price{i}={p.Price}"));
