@@ -1,4 +1,6 @@
 ﻿@page "/payment"
+@using Netways.NetPays.UI.Models
+@using System.Text.Json
 @rendermode InteractiveServer
 @inject IJSRuntime jSRuntime
 
@@ -110,8 +112,8 @@
                     <div class="row">
                         <div class="col-12 text-end">
                             <h5 class="success-message">تم إنشاء الفاتورة بنجاح</h5>
-                            <h5 class="mt-3 invoice-number">رقم فاتورة سداد: <span></span></h5>
-                            <h6 class="mt-3 waiting-text">@Dots<span>@sadadRecipt</span></h6>
+                            <h5 class="mt-3 invoice-number">رقم فاتورة سداد: <span>@sadadRecipt</span></h5>
+                            <h6 class="mt-3 waiting-text">@Dots<span></span></h6>
                         </div>
                     </div>
                 </div>
@@ -128,7 +130,10 @@
     private string Dots = ""; // Holds the current dots
     private string waitingMsg = "سيتم التحديث تلقائيا بعد الدفع"; // Holds the current dots
     private List<Product>? selectedProducts;
-    int sadadRecipt = new Random().Next(100000, int.MaxValue);
+    string sadadRecipt = DateTime.Now.ToString("yyyyMMdd") + new Random().Next(1000, 9999).ToString();
+
+
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

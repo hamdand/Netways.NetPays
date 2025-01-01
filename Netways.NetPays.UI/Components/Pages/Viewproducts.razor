@@ -1,6 +1,7 @@
 ﻿@page "/viewproducts"
+@using System.Text.Json
+@using Netways.NetPays.UI.Models
 @rendermode InteractiveServer
-@attribute [StreamRendering]
 @inject NavigationManager NavigationManager
 @inject IJSRuntime jSRuntime
 
@@ -119,11 +120,11 @@ else
         // Save to local storage
         await jSRuntime.InvokeVoidAsync("localStorageHelper.save", "selectedProducts", JsonSerializer.Serialize(selectedProducts));
 
-        // Serialize the selected products into a query string
-        var query = string.Join("&", selectedProducts.Select((p, i) =>
-            $"Title{i}={Uri.EscapeDataString(p.Title)}&Price{i}={p.Price}"));
+        // // Serialize the selected products into a query string
+        // var query = string.Join("&", selectedProducts.Select((p, i) =>
+        //     $"Title{i}={Uri.EscapeDataString(p.Title)}&Price{i}={p.Price}"));
 
         // Navigate to the payment page with selected products
-        NavigationManager.NavigateTo($"/payment?{query}");
+        NavigationManager.NavigateTo($"/payment");
     }
 }
