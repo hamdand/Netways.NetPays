@@ -1,11 +1,14 @@
 ﻿@page "/payment"
 @using Netways.NetPays.UI.Models
 @using System.Text.Json
+@using Radzen
+@using RedisFusion.Services
 @rendermode InteractiveServer
 @inject IJSRuntime jSRuntime
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject NotificationService NotificationService
+@inject IRedisFusionService _redisService
 
 <h3>ملخص الفاتورة</h3>
 <hr class="hrGoldColor" />
@@ -184,8 +187,11 @@
         ShowSadadLoader = false; // Hide loader
         IsSadadSelected = false;
         ShowSadadResult = true;
+        await UploadBillToSadad();
         await AnimateDots();
         StateHasChanged(); // Trigger UI update to hide the loader
+
+       
 
     }
     private async Task LoadSelectedProducts()
@@ -226,11 +232,12 @@
             saddBillRequest.BillSubCategory = 2;
 
             var response = await Http.PostAsJsonAsync($"{baseUrl}/Bills/UploadBill",saddBillRequest);
+
             if (response.IsSuccessStatusCode)
             {
                 saddBillResponse = await response.Content.ReadFromJsonAsync<SaddBillResponse>();
                 ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Done", Detail = "Payment Done Successfully", Duration = 5000 });
-                NavigationManager.NavigateTo($"/viewproducts");
+               // NavigationManager.NavigateTo($"/viewproducts");
             }
         }
         catch (Exception ex)
