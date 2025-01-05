@@ -3,6 +3,7 @@
 @using System.Text.Json
 @using Radzen
 @using RedisFusion.Services
+@using System.Net.Http.Headers
 @rendermode InteractiveServer
 @inject IJSRuntime jSRuntime
 @inject HttpClient Http
@@ -118,7 +119,7 @@
                     <div class="row">
                         <div class="col-12 text-end">
                             <h5 class="success-message">تم إنشاء الفاتورة بنجاح</h5>
-                            <h5 class="mt-3 invoice-number">رقم فاتورة سداد: <span>@sadadRecipt</span></h5>
+                            <h5 class="mt-3 invoice-number">رقم فاتورة سداد: <span>@BillNumber</span></h5>
                             <h6 class="mt-3 waiting-text">@Dots<span></span></h6>
                         </div>
                     </div>
@@ -135,8 +136,8 @@
     private string Dots = ""; // Holds the current dots
     private string waitingMsg = "سيتم التحديث تلقائيا بعد الدفع"; // Holds the current dots
     private List<Product> selectedProducts;
-    private string baseUrl = "http://localhost:8090/api";
-    string sadadRecipt = DateTime.Now.ToString("yyyyMMdd") + new Random().Next(1000, 9999).ToString();
+    private string baseUrl = "http://localhost:8090";
+    string BillNumber = DateTime.Now.ToString("yyyyMMdd") + new Random().Next(1000, 9999).ToString();
     private float totalPrice = 0;
     private SaddBillRequest saddBillRequest;
     private SaddBillResponse saddBillResponse;
@@ -165,12 +166,12 @@
             await Task.Delay(2250);
 
 
-            var result = await _redisService.GetCachedObjectAsync<PaymentNotification>("BILL123456789");
+            var result = await _redisService.GetCachedObjectAsync<PaymentNotification>(BillNumber);
 
             if (!(result is null))
             {
-                await _redisService.SetCachedItemAsync("BILL123456789", result, 1);
-                NavigationManager.NavigateTo($"/viewproducts");
+                await _redisService.SetCachedItemAsync(BillNumber, result, 1);
+                NavigationManager.NavigateTo($"/success");
             }
 
         }
@@ -229,7 +230,7 @@
         {
             saddBillRequest = new SaddBillRequest();
             saddBillRequest.Amount = totalPrice;
-            saddBillRequest.BillNumber = sadadRecipt;
+            saddBillRequest.BillNumber = BillNumber;
             saddBillRequest.BillCycle = string.Empty;
             saddBillRequest.AccountNumber = "11223344";
             saddBillRequest.DueDate = DateTime.Parse("2025-05-16T13:45:27.1743994+03:00");
@@ -243,12 +244,17 @@
             saddBillRequest.BillCategory = 1;
             saddBillRequest.BillSubCategory = 2;
 
-            var response = await Http.PostAsJsonAsync($"{baseUrl}/Bills/UploadBill", saddBillRequest);
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/api/Bills/UploadBill");
+            string bearerToken = await GetToken();
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
+            request.Content = JsonContent.Create(saddBillRequest);
+
+            var response = await Http.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {
                 saddBillResponse = await response.Content.ReadFromJsonAsync<SaddBillResponse>();
-                ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Done", Detail = "Payment Done Successfully", Duration = 5000 });
+                //ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Done", Detail = "Payment Done Successfully", Duration = 5000 });
                 // NavigationManager.NavigateTo($"/viewproducts");
             }
         }
@@ -256,6 +262,41 @@
         {
             //errorMessage = $"Error: {ex.Message}";
             ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Technical Error", Detail = ex.Message, Duration = 5000 });
+        }
+    }
+
+    private async Task<string> GetToken(){
+        try
+        {
+            // Prepare the form data
+            var values = new Dictionary<string, string>
+            {
+                { "grant_type", "password" },
+                { "username", "admin" },
+                { "password", "P@ssw0rd" }
+            };
+            var content = new FormUrlEncodedContent(values);
+
+            // Create an HttpRequestMessage
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/Token");
+            request.Content = content;
+
+            var httpResponse = await Http.SendAsync(request);
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                // Deserialize the response content into the response model
+                var response = await httpResponse.Content.ReadFromJsonAsync<TokenResponse>();
+                return response.access_token;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        catch (Exception e)
+        {
+            return null;
         }
     }
     private void ShowNotification(NotificationMessage message)

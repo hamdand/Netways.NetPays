@@ -21,4 +21,5 @@
         public string OfficialId { get; set; }
         public string OfficialIdType { get; set; }
     }
+
 }

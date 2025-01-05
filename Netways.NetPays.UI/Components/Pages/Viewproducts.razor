@@ -5,7 +5,6 @@
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
 @inject IJSRuntime jSRuntime
-@inject NotificationService NotificationService
 
 
 <PageTitle>منتجات صندوق التنمية الزراعية</PageTitle>
@@ -130,8 +129,6 @@ else
         // // Serialize the selected products into a query string
         // var query = string.Join("&", selectedProducts.Select((p, i) =>
         //     $"Title{i}={Uri.EscapeDataString(p.Title)}&Price{i}={p.Price}"));
-
-        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Done", Detail = "Prods Selected Successfully", Duration = 3000 });
 
         // Navigate to the payment page with selected products
         NavigationManager.NavigateTo($"/payment");
