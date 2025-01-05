@@ -1,10 +1,19 @@
 using Netways.NetPays.UI.Components;
+using Netways.Unit6201.RabbitMQ.RabbitMQUtilities;
+using Netways.Unit6201.RabbitMQ.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.Configure<RabbitMQConfigurations>(
+    builder.Configuration.GetSection(nameof(RabbitMQConfigurations)));
+builder.Services
+    .AddSingleton<IRabbitMQService, RabbitMQService>()
+    .AddHostedService<RabbitMQConsumer>();
+
 
 var app = builder.Build();
 
