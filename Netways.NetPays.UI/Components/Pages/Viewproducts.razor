@@ -12,9 +12,14 @@
 
 <p>هذا المكون يعرض قائمة بالمنتجات التي يقدمها صندوق التنمية الزراعية.</p>
 
+
 @if (products == null || !products.Any())
 {
-    <p><em>جاري التحميل...</em></p>
+    <div class="loader-overlay" style="position: relative;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
 }
 else
 {
@@ -45,9 +50,8 @@ else
             }
         </tbody>
     </table>
-
+    <button class="btn btn-primary m-3" @onclick="GoToPayment">اذهب لصفحة الدفع</button>
 }
-<button class="btn btn-primary m-3" @onclick="GoToPayment">اذهب لصفحة الدفع</button>
 @code {
     private List<Product> products = new List<Product>();
     private List<Product> selectedProducts = new List<Product>();
@@ -114,7 +118,8 @@ else
         }
         var jsonSelectedProducts = await jSRuntime.InvokeAsync<string>("localStorageHelper.load", "selectedProducts");
 
-        if (!string.IsNullOrEmpty(jsonSelectedProducts)){
+        if (!string.IsNullOrEmpty(jsonSelectedProducts))
+        {
             await jSRuntime.InvokeAsync<string>("localStorageHelper.remove", "selectedProducts");
         }
         // Save to local storage
