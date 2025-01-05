@@ -1,7 +1,85 @@
 ﻿@page "/success"
 @rendermode InteractiveServer
+
+@inject IJSRuntime jSRuntime
 <h3 class="text-success m-3">شكرا لك تم الدفع بنجاح</h3>
 
+
+@if (selectedProducts == null || !selectedProducts.Any())
+{
+    <div class="loader-overlay" style="position: relative;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <table class="table m-2">
+        <thead>
+            <tr>
+                <th>الصورة</th>
+                <th>اسم المنتج</th>
+                <th>الوصف</th>
+                <th>السعر (ريال سعودي)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in selectedProducts)
+            {
+                <tr>
+                    <td>
+                        <img src="@product.ImageUrl" alt="@product.Title" class="product-image" />
+                    </td>
+                    <td>@product.Title</td>
+                    <td>@product.Description</td>
+                    <td>@product.Price.ToString("N2")</td>
+                </tr>
+            }
+            <tr>
+                <td colspan="4"></td>
+            </tr>
+            <tr>
+                <td><b>
+                        المبلغ الإجمالي:
+                    </b>
+                </td>
+                <td colspan="3">
+                    <b>
+                    @totalPrice ريال</b>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button class="btn btn-primary m-3" >طباعة الفاتورة</button>
+}
+
 @code {
+
+    private List<Product> selectedProducts;
+    private float totalPrice = 0;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadSelectedProducts();
+        }
+    }
+
+    private async Task LoadSelectedProducts()
+    {
+        // Retrieve the JSON string from local storage
+        var jsonSelectedProducts = await jSRuntime.InvokeAsync<string>("localStorageHelper.load", "selectedProducts");
+
+        if (!string.IsNullOrEmpty(jsonSelectedProducts))
+        {
+            // Deserialize the JSON string back to the original type
+            selectedProducts = JsonSerializer.Deserialize<List<Product>>(jsonSelectedProducts);
+            totalPrice = selectedProducts.Sum(x => x.Price);
+        }
+        StateHasChanged();
+    }
 
 }
