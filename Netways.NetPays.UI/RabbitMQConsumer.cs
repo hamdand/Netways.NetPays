@@ -28,7 +28,7 @@ namespace Netways.NetPays.UI
             {
                 var payment = JsonConvert.DeserializeObject<PaymentNotification>(message);
 
-                var result = await _redisService.GetOrAddCachedObjectAsync(payment.BillNumber, getData);
+                var result = await _redisService.GetOrAddCachedObjectAsync(payment.BillNumber, ()=>getData(payment));
 
                 return FunctionResult.SucceededAndDeleteFromQueue;
             }
@@ -38,9 +38,9 @@ namespace Netways.NetPays.UI
             }
         }
 
-        private async Task<object> getData()
+        private async Task<object> getData(PaymentNotification payment)
         {
-            return Task.CompletedTask;
+            return payment;
         }
     }
 }

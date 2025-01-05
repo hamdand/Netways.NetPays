@@ -14,7 +14,8 @@
 <hr class="hrGoldColor" />
 <div class="row mb-3">
     <div class="col-lg-5 col-md-3 col-sm-12 col-xs-12" id="summarydiv">
-        @if(selectedProducts != null){
+        @if (selectedProducts != null)
+        {
             <div class="row">
                 @foreach (var product in selectedProducts)
                 {
@@ -30,11 +31,11 @@
             <div class="row mt-lg-5">
                 <div class="col-8">
                     <span>الإجمالي: </span>
-                </div>                
+                </div>
                 <div class="col-4">
                     <span>@totalPrice ريال</span>
                 </div>
-            </div>            
+            </div>
             <div class="row mt-lg-5">
                 <div class="col-10 d-grid gap-2">
                     <button class="btn btn-warning" @onclick="UploadBillToSadad">دفع</button>
@@ -42,7 +43,8 @@
                 <div class="col-1"></div>
             </div>
         }
-        else{
+        else
+        {
             <div class="row">
                 <div class="col-8">
                     <h5>No Selected Products Found!</h5>
@@ -161,6 +163,16 @@
             }
 
             await Task.Delay(2250);
+
+
+            var result = await _redisService.GetCachedObjectAsync<PaymentNotification>("BILL123456789");
+
+            if (!(result is null))
+            {
+                await _redisService.SetCachedItemAsync("BILL123456789", result, 1);
+                NavigationManager.NavigateTo($"/viewproducts");
+            }
+
         }
     }
     private void ShowCardsOptions()
@@ -191,7 +203,7 @@
         await AnimateDots();
         StateHasChanged(); // Trigger UI update to hide the loader
 
-       
+
 
     }
     private async Task LoadSelectedProducts()
@@ -211,7 +223,7 @@
     {
         if (!ShowSadadResult)
         {
-            return; 
+            return;
         }
         try
         {
@@ -231,13 +243,13 @@
             saddBillRequest.BillCategory = 1;
             saddBillRequest.BillSubCategory = 2;
 
-            var response = await Http.PostAsJsonAsync($"{baseUrl}/Bills/UploadBill",saddBillRequest);
+            var response = await Http.PostAsJsonAsync($"{baseUrl}/Bills/UploadBill", saddBillRequest);
 
             if (response.IsSuccessStatusCode)
             {
                 saddBillResponse = await response.Content.ReadFromJsonAsync<SaddBillResponse>();
                 ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Done", Detail = "Payment Done Successfully", Duration = 5000 });
-               // NavigationManager.NavigateTo($"/viewproducts");
+                // NavigationManager.NavigateTo($"/viewproducts");
             }
         }
         catch (Exception ex)
