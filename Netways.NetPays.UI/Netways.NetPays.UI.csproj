@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Netways.Unit6201.RabbitMQ" Version="1.0.3" />
+    <PackageReference Include="Radzen.Blazor" Version="5.7.2" />
     <PackageReference Include="RedisFusion" Version="1.1.1" />
   </ItemGroup>
 

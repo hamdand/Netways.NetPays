@@ -1,10 +1,14 @@
 using Netways.NetPays.UI.Components;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddHttpClient();
+builder.Services.AddRadzenComponents();
 
 var app = builder.Build();
 

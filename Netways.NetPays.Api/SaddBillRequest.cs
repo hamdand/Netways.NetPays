@@ -1,4 +1,4 @@
-﻿namespace Netways.NetPays.UI.Models
+namespace Netways.NetPays.Api
 {
     public class SaddBillRequest
     {

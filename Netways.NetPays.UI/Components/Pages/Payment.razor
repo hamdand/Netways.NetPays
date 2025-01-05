@@ -3,7 +3,9 @@
 @using System.Text.Json
 @rendermode InteractiveServer
 @inject IJSRuntime jSRuntime
-
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject NotificationService NotificationService
 
 <h3>ملخص الفاتورة</h3>
 <hr class="hrGoldColor" />
@@ -27,7 +29,7 @@
                     <span>الإجمالي: </span>
                 </div>                
                 <div class="col-4">
-                    <span>@selectedProducts.Sum(x => x.Price) ريال</span>
+                    <span>@totalPrice ريال</span>
                 </div>
             </div>            
             <div class="row mt-lg-5">
@@ -120,7 +122,6 @@
         </div>
     </div>
 </div>
-
 @code {
     private bool IsCardSelected = false;
     private bool IsSadadSelected = false;
@@ -128,10 +129,12 @@
     private bool ShowSadadResult = false;
     private string Dots = ""; // Holds the current dots
     private string waitingMsg = "سيتم التحديث تلقائيا بعد الدفع"; // Holds the current dots
-    private List<Product>? selectedProducts;
+    private List<Product> selectedProducts;
+    private string baseUrl = "http://localhost:8090/api";
     string sadadRecipt = DateTime.Now.ToString("yyyyMMdd") + new Random().Next(1000, 9999).ToString();
-
-
+    private float totalPrice = 0;
+    private SaddBillRequest saddBillRequest;
+    private SaddBillResponse saddBillResponse;
 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -194,11 +197,52 @@
         {
             // Deserialize the JSON string back to the original type
             selectedProducts = JsonSerializer.Deserialize<List<Product>>(jsonSelectedProducts);
+            totalPrice = selectedProducts.Sum(x => x.Price);
         }
         StateHasChanged();
     }
     private async Task UploadBillToSadad()
     {
+        if (!ShowSadadResult)
+        {
+            return; 
+        }
+        try
+        {
+            saddBillRequest = new SaddBillRequest();
+            saddBillRequest.Amount = totalPrice;
+            saddBillRequest.BillNumber = sadadRecipt;
+            saddBillRequest.BillCycle = string.Empty;
+            saddBillRequest.AccountNumber = "11223344";
+            saddBillRequest.DueDate = DateTime.Parse("2025-05-16T13:45:27.1743994+03:00");
+            saddBillRequest.ExpiryDate = DateTime.Parse("2025-07-20T13:45:27.1743994+03:00");
+            saddBillRequest.Customer.OfficialId = "2044907456";
+            saddBillRequest.Customer.OfficialIdType = "IQA";
+            saddBillRequest.CustomerName = "Abdaullah Khalid";
+            saddBillRequest.CustomerEmail = "ahasan@test.com";
+            saddBillRequest.CustomerPhone = "0566666666";
+            saddBillRequest.Notes = string.Empty;
+            saddBillRequest.BillCategory = 1;
+            saddBillRequest.BillSubCategory = 2;
 
+            var response = await Http.PostAsJsonAsync($"{baseUrl}/Bills/UploadBill",saddBillRequest);
+            if (response.IsSuccessStatusCode)
+            {
+                saddBillResponse = await response.Content.ReadFromJsonAsync<SaddBillResponse>();
+                ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Done", Detail = "Payment Done Successfully", Duration = 5000 });
+                NavigationManager.NavigateTo($"/viewproducts");
+            }
+        }
+        catch (Exception ex)
+        {
+            //errorMessage = $"Error: {ex.Message}";
+            ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Technical Error", Detail = ex.Message, Duration = 5000 });
+        }
+    }
+    private void ShowNotification(NotificationMessage message)
+    {
+        NotificationService.Notify(message);
+
+        //console.Log($"{message.Severity} notification");
     }
 }
