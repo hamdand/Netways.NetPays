@@ -25,7 +25,7 @@
                         <p>@product.Description</p>
                     </div>
                     <div class="col-4">
-                        <span>@product.Price ريال</span>
+                        <span>@product.Price.ToString("N2") ريال</span>
                     </div>
                 }
             </div>
@@ -34,7 +34,7 @@
                     <span>الإجمالي: </span>
                 </div>
                 <div class="col-4">
-                    <span>@totalPrice ريال</span>
+                    <span>@totalPrice.ToString("N2") ريال</span>
                 </div>
             </div>
             <div class="row mt-lg-5">
